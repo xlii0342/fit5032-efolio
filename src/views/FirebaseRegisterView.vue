@@ -60,48 +60,47 @@ const submitForm = async () => {
     const userEmail = formData.value.username.trim();
     const userPassword = formData.value.password.trim();
 
-    // 检查输入是否为空
+
     if (!userEmail || !userPassword) {
         alert('Please enter both email and password.');
         return;
     }
 
-    // 验证电子邮件格式
+  
     if (!validateEmail(userEmail)) {
         alert('Please enter a valid email address.');
         return;
     }
 
-    // 确保密码符合 Firebase 要求（6 个字符以上）
+  
     if (userPassword.length < 6) {
         alert('Password must be at least 6 characters long.');
         return;
     }
 
     try {
-        // 使用 Firebase 创建用户
+        
         const { user } = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
 
-        // 创建成功后立即显示提示
         alert('Sign up successful!!');
 
-        // 将用户数据存储到 Firestore
+  
         await setDoc(doc(db, 'users', user.uid), {
             email: userEmail,
             role: 'user', 
         });
 
-        // 更新用户身份验证状态
+    
         isAuthenticated.value = {
             user: user,
             role: 'user',
         };
 
-        // 跳转到“About”页面
+     
         router.push({ name: 'About' });
     } catch (error) {
         console.error('Sign-up error:', error);
-        // 根据 Firebase 错误代码显示错误信息
+       
         alert(`Sign-up failed: ${error.message}`);
     }
 }
