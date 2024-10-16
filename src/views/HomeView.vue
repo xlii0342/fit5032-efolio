@@ -2,7 +2,9 @@
 import { ref, watch } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import db from '../firebase/init.js'
+import { doc, setDoc } from 'firebase/firestore'; // Firebase Firestore 方法
+
+import { db } from '../firebase/init.js';
 
 const formData = ref({
   username: '',
@@ -17,12 +19,32 @@ const formData = ref({
 const submittedCards = ref([])
 const haveFriend = ref(null)
 
-const submitForm = () => {
+const submitForm = async () => {
   validateName(true)
   validatePassword(true)
-  if (!errors.value.username && !errors.value.password) {
-    submittedCards.value.push({ ...formData.value })
-    clearForm()
+  validateConfirmPassword(true)
+
+  // 确保所有字段都通过验证
+  if (!errors.value.username && !errors.value.password && !errors.value.confirmPassword) {
+    try {
+      // 提交到 Firebase Firestore
+      await setDoc(doc(db, "users", formData.value.username), {
+        username: formData.value.username,
+        password: formData.value.password, // 生产环境中不建议直接存储明文密码
+        isAustralian: formData.value.isAustralian,
+        reason: formData.value.reason,
+        gender: formData.value.gender,
+        suburb: formData.value.suburb
+      });
+
+      // 将数据添加到本地的 submittedCards
+      submittedCards.value.push({ ...formData.value });
+      
+      // 清除表单
+      clearForm();
+    } catch (error) {
+      console.error('Error adding document: ', error);
+    }
   }
 }
 
@@ -30,9 +52,11 @@ const clearForm = () => {
   formData.value = {
     username: '',
     password: '',
+    confirmPassword: '',  // 清除确认密码
     isAustralian: false,
     reason: '',
-    gender: ''
+    gender: '',
+    suburb: 'Clayton'  // 重置为默认值
   }
 }
 
@@ -75,6 +99,7 @@ const validatePassword = (blur) => {
     errors.value.password = null
   }
 }
+
 const validateConfirmPassword = (blur) => {
   if (formData.value.password !== formData.value.confirmPassword) {
     if (blur) errors.value.confirmPassword = 'Passwords do not match.'
@@ -85,19 +110,21 @@ const validateConfirmPassword = (blur) => {
 
 const validateReason = (blur) => {
   if (formData.value.reason.length < 10) {
-    if (blur) errors.value.reason = 'Name must be at least 10 characters'
+    if (blur) errors.value.reason = 'Reason must be at least 10 characters'
   } else {
     errors.value.reason = null
   }
-  if(formData.value.reason.includes('friend')){
+  
+  // 检查是否包含 "friend"
+  if (formData.value.reason.includes('friend')) {
     haveFriend.value = 'Great to have a friend'
   } else {
     haveFriend.value = null
   }
 }
-watch(()=>formData.value.reason, ()=>{
-  validateReason(true)
-})
+
+// 使用 watch 来实时监控 reason 的变化
+watch(() => formData.value.reason, validateReason);
 </script>
 
 <template>
@@ -134,32 +161,33 @@ watch(()=>formData.value.reason, ()=>{
               </select>   
             </div>
           </div>
+
           <div class="row mb-3">
             <div class="col-md-6 col-sm-6">
-                <label for="password" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  @blur="() => validatePassword(true)"
-                  @input="() => validatePassword(false)"
-                  v-model="formData.password"/>
-                <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
-              </div>
-              <div class="col-md-6 col-sm-6">
-                  <label for="confirm-password" class="form-label">Confirm password</label>
-                  <input
-                      type="password"
-                      class="form-control"
-                      id="confirm-password"
-                      v-model="formData.confirmPassword"
-                      @blur="() => validateConfirmPassword(true)"
-                  />
-                  <div v-if="errors.confirmPassword" class="text-danger">
-                      {{ errors.confirmPassword }}
-                  </div>
-              </div>
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                @blur="() => validatePassword(true)"
+                @input="() => validatePassword(false)"
+                v-model="formData.password"/>
+              <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
             </div>
+            
+            <div class="col-md-6 col-sm-6">
+              <label for="confirm-password" class="form-label">Confirm password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirm-password"
+                v-model="formData.confirmPassword"
+                @blur="() => validateConfirmPassword(true)"
+              />
+              <div v-if="errors.confirmPassword" class="text-danger">{{ errors.confirmPassword }}</div>
+            </div>
+          </div>
+
           <div class="form-check mb-3">
             <input
               type="checkbox"
@@ -169,6 +197,7 @@ watch(()=>formData.value.reason, ()=>{
             />
             <label class="form-check-label" for="isAustralian">Australian Resident?</label>
           </div>
+
           <div class="mb-3">
             <label for="reason" class="form-label">Reason for joining</label>
             <textarea
@@ -176,17 +205,15 @@ watch(()=>formData.value.reason, ()=>{
               id="reason"
               rows="3"
               v-model="formData.reason"></textarea>
-            <div v-if="errors.reason" class="text-danger">
-              {{ errors.reason }}
-            </div>
-            <div v-if="haveFriend" class="text-success">
-              {{ haveFriend }}
-            </div>
+            <div v-if="errors.reason" class="text-danger">{{ errors.reason }}</div>
+            <div v-if="haveFriend" class="text-success">{{ haveFriend }}</div>
           </div>
+
           <div class="mb-3">
             <label for="reason" class="form-label">Suburb</label>
             <input type="text" class="form-control" id="suburb" v-model="formData.suburb" />
           </div>
+
           <div class="text-center">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
             <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
@@ -200,7 +227,7 @@ watch(()=>formData.value.reason, ()=>{
     <h4>This is a Primevue Datatable.</h4>
     <DataTable :value="submittedCards" tableStyle="min-width: 50rem">
       <Column field="username" header="Username"></Column>
-      <Column field="password" header="Password"></Column>
+      <Column field="password" header="Password" :formatter="() => '******'"></Column> <!-- 隐藏密码 -->
       <Column field="isAustralian" header="Australian Resident"></Column>
       <Column field="gender" header="Gender"></Column>
       <Column field="reason" header="Reason"></Column>
@@ -218,10 +245,8 @@ watch(()=>formData.value.reason, ()=>{
         <div class="card-header">User Information</div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">Username: {{ card.username }}</li>
-          <li class="list-group-item">Password: {{ card.password }}</li>
-          <li class="list-group-item">
-            Australian Resident: {{ card.isAustralian ? 'Yes' : 'No' }}
-          </li>
+          <li class="list-group-item">Password: ******</li> <!-- 隐藏密码 -->
+          <li class="list-group-item">Australian Resident: {{ card.isAustralian ? 'Yes' : 'No' }}</li>
           <li class="list-group-item">Gender: {{ card.gender }}</li>
           <li class="list-group-item">Reason: {{ card.reason }}</li>
         </ul>
@@ -236,7 +261,6 @@ watch(()=>formData.value.reason, ()=>{
   max-width: 80vw;
   margin: 0 auto;
   padding: 20px;
-  /* background-color: #e0bfbf; */
   border-radius: 10px;
 }
 

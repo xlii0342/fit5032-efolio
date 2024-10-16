@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { isAuthenticated } from '../router/index.js'
 import { useRouter } from 'vue-router'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { db } from '../firebase/init.js';
 
-import db from '../firebase/init'
 import { doc, getDoc } from 'firebase/firestore'
 import Button from 'primevue/button';
 

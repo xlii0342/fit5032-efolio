@@ -1,21 +1,24 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+// Import Firebase SDKs
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBAWsN9T9fAvXrW_xc1u7-7-0oYS4YQMHA",
-  authDomain: "week7xinyuli.firebaseapp.com",
-  projectId: "week7xinyuli",
-  storageBucket: "week7xinyuli.appspot.com",
-  messagingSenderId: "220600255992",
-  appId: "1:220600255992:web:698d05c75044ef1501020d"
+  apiKey: "AIzaSyCXQInwCT-rvg9z6SJEBb-GWE8g88LX2ss",
+  authDomain: "efolio-b0bc3.firebaseapp.com",
+  projectId: "efolio-b0bc3",
+  storageBucket: "efolio-b0bc3.appspot.com",
+  messagingSenderId: "585648243558",
+  appId: "1:585648243558:web:e9e0b7483c004a521c3ea7"
 };
 
-// initializeApp(firebaseConfig)
-// const db = getFirestore()
-const db = firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-// const db = ''
-export default db
+// Initialize Firestore and Auth
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// 使用命名导出导出实例
+export { db, auth };

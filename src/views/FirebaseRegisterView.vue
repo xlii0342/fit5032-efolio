@@ -25,7 +25,7 @@
                     </div>
                     <div class="text-center mt-3">
                         Already have an account? Click <router-link to="/login"><Button label="here" link
-                                style="color: blue;" /> </router-link>to sign in!
+                                style="color: blue;" /> </router-link> to sign in!
                     </div>
                 </form>
             </div>
@@ -38,7 +38,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-import db from '../firebase/init'  
+import { db } from '../firebase/init.js';
 import { isAuthenticated } from '../router/index.js'
 import Button from 'primevue/button';
 
@@ -81,30 +81,30 @@ const submitForm = async () => {
     try {
         // 使用 Firebase 创建用户
         const { user } = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
-        
-       
+
+        // 创建成功后立即显示提示
+        alert('Sign up successful!!');
+
+        // 将用户数据存储到 Firestore
         await setDoc(doc(db, 'users', user.uid), {
             email: userEmail,
             role: 'user', 
         });
 
-   
+        // 更新用户身份验证状态
         isAuthenticated.value = {
             user: user,
             role: 'user',
         };
 
-    
-        alert('Sign up successful!!');
-
-    
+        // 跳转到“About”页面
         router.push({ name: 'About' });
     } catch (error) {
-        console.error('Sign-up error:', error);  
-        
+        console.error('Sign-up error:', error);
+        // 根据 Firebase 错误代码显示错误信息
+        alert(`Sign-up failed: ${error.message}`);
     }
 }
-
 </script>   
 
 <style scoped>

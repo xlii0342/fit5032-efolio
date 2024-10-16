@@ -19,8 +19,9 @@
 <script setup>
 import { ref } from 'vue';
 import { collection, addDoc } from 'firebase/firestore';
-import db from '../firebase/init.js';
-import BookList from '@/components/icons/BookList.vue';
+import { db } from '../firebase/init.js';
+import BookList from '../components/icons/BookList.vue';  // 使用相对路径
+
 
 const isbn = ref('');
 const name = ref('');
