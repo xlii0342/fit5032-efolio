@@ -1,9 +1,7 @@
 <template>
-    <div id="app">
-      <h1>Book Counter</h1>
-      <button @click="getBookCount">Get Book Count</button>
-      <p v-if="count !== null">Total number of books: {{ count }}</p>
-      <p v-if="error">{{ error }}</p>
+    <div>
+      <pre v-if="count !== null">{{ JSON.stringify({ count: count }, null, 2) }}</pre> 
+      <pre v-if="error">{{ error }}</pre>
     </div>
   </template>
   
@@ -27,7 +25,6 @@
     }
   };
   
-  // 当页面加载时自动获取书籍数量
   onMounted(() => {
     getBookCount();
   });

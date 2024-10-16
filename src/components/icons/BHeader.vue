@@ -40,6 +40,15 @@ const logout = () => {
           <router-link to="/getbookcount" class="nav-link" active-class="active">Book Count</router-link>
         </li>
         <li class="nav-item" v-if="isAuthenticated">
+          <router-link to="/WeatherCheck" class="nav-link" active-class="active">Get Weather</router-link>
+        </li>
+        <li class="nav-item" v-if="isAuthenticated">
+          <router-link to="/CountBookAPI" class="nav-link" active-class="active">Count Book API </router-link>
+        </li>
+        <li class="nav-item" v-if="isAuthenticated">
+          <router-link to="/GetAllBookAPI" class="nav-link" active-class="active">GetAllBookAPI </router-link>
+        </li>
+        <li class="nav-item" v-if="isAuthenticated">
           <router-link to="/about" class="nav-link" active-class="active">About</router-link>
         </li>
         <li class="nav-item" v-if="isAuthenticated">
