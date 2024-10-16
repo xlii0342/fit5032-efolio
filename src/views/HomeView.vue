@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { doc, setDoc } from 'firebase/firestore'; // Firebase Firestore 方法
+import { doc, setDoc } from 'firebase/firestore'; 
 
 import { db } from '../firebase/init.js';
 
@@ -24,13 +24,13 @@ const submitForm = async () => {
   validatePassword(true)
   validateConfirmPassword(true)
 
-  // 确保所有字段都通过验证
+ 
   if (!errors.value.username && !errors.value.password && !errors.value.confirmPassword) {
     try {
-      // 提交到 Firebase Firestore
+      
       await setDoc(doc(db, "users", formData.value.username), {
         username: formData.value.username,
-        password: formData.value.password, // 生产环境中不建议直接存储明文密码
+        password: formData.value.password, 
         isAustralian: formData.value.isAustralian,
         reason: formData.value.reason,
         gender: formData.value.gender,
@@ -52,11 +52,11 @@ const clearForm = () => {
   formData.value = {
     username: '',
     password: '',
-    confirmPassword: '',  // 清除确认密码
+    confirmPassword: '', 
     isAustralian: false,
     reason: '',
     gender: '',
-    suburb: 'Clayton'  // 重置为默认值
+    suburb: 'Clayton'  
   }
 }
 
@@ -123,7 +123,7 @@ const validateReason = (blur) => {
   }
 }
 
-// 使用 watch 来实时监控 reason 的变化
+
 watch(() => formData.value.reason, validateReason);
 </script>
 

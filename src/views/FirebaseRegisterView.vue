@@ -50,7 +50,7 @@ const formData = ref({
     password: '',
 })
 
-// 正则表达式验证电子邮件格式
+
 const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);

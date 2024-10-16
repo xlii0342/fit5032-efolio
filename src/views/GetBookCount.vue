@@ -27,7 +27,7 @@
     }
   };
   
-  // 当页面加载时自动获取书籍数量
+  
   onMounted(() => {
     getBookCount();
   });

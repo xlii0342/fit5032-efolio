@@ -30,7 +30,7 @@
     try {
       const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&appid=4821635646567995fe1bf523624b0e41&units=metric`);
       weatherData.value = response.data;
-      temperature.value = Math.floor(response.data.main.temp); // 摄氏温度
+      temperature.value = Math.floor(response.data.main.temp); 
       iconUrl.value = `http://openweathermap.org/img/w/${response.data.weather[0].icon}.png`;
       console.log('Weather Data:', weatherData.value);
     } catch (error) {
@@ -42,7 +42,7 @@
     try {
       const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=4821635646567995fe1bf523624b0e41&units=metric`);
       weatherData.value = response.data;
-      temperature.value = Math.floor(response.data.main.temp); // 摄氏温度
+      temperature.value = Math.floor(response.data.main.temp); 
       iconUrl.value = `http://openweathermap.org/img/w/${response.data.weather[0].icon}.png`;
       console.log('Weather Data:', weatherData.value);
     } catch (error) {

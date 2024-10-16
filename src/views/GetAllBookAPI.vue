@@ -7,10 +7,9 @@ import { ref, onMounted } from 'vue';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/init.js';  
 
-// 状态变量
 const books = ref([]);
 
-const loading = ref(true);  // 增加加载状态
+const loading = ref(true);  
 
 const fetchBooks = async () => {
     try {
@@ -44,7 +43,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 简单样式 */
+
 .container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 80vw;
