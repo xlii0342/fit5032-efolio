@@ -5,6 +5,7 @@ import LoginView from '../views/LoginView.vue'
 import FirebaseRegisterView from '../views/FirebaseRegisterView.vue'
 import AddBookView from '@/views/AddBookView.vue'
 import { ref } from 'vue'
+import GetBookCount from '@/views/GetBookCount.vue'
 
 const isAuthenticated = ref(false)  
 
@@ -41,6 +42,11 @@ const routes = [
       if (!isAuthenticated.value) next({ name: 'Login' })  
       else next()
     }
+  },
+  {
+    path: '/getbookcount',
+    name: 'getbookcount',
+    component: GetBookCount
   },
 
   {
