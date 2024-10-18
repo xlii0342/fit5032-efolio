@@ -49,6 +49,9 @@ const logout = () => {
           <router-link to="/GetAllBookAPI" class="nav-link" active-class="active">GetAllBookAPI </router-link>
         </li>
         <li class="nav-item" v-if="isAuthenticated">
+          <router-link to="/Navigation" class="nav-link" active-class="active"> Navigation Page </router-link>
+        </li>
+        <li class="nav-item" v-if="isAuthenticated">
           <router-link to="/about" class="nav-link" active-class="active">About</router-link>
         </li>
         <li class="nav-item" v-if="isAuthenticated">
